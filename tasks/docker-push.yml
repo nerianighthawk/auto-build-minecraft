@@ -1,0 +1,13 @@
+---
+- name: Docker login
+  docker_login:
+    registry_url: https://asia-northeast1-docker.pkg.dev
+    username: _json_key_base64
+    password: "{{ lookup('file', keyfile_path) }}"
+- name: Build docker image
+  docker_image:
+    build:
+      path: "{{ dockerfile_path }}"
+    name: asia-northeast1-docker.pkg.dev/minecraft-379905/minecraft-server/test-image
+    push: true
+    source: build

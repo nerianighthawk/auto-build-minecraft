@@ -1,0 +1,55 @@
+- name: Execute apt update
+  become: yes
+  apt:
+    update_cache: yes
+
+- name: Install packages
+  become: yes
+  apt:
+    name:
+      - apt-transport-https
+      - ca-certificates
+      - curl
+      - software-properties-common
+    state: present
+
+- name: Add docker GPG key
+  become: yes
+  ansible.builtin.apt_key:
+    url: https://download.docker.com/linux/ubuntu/gpg
+    state: present
+
+- name: Add docker repository to APT source
+  become: yes
+  ansible.builtin.apt_repository:
+    repo: deb [arch=amd64] https://download.docker.com/linux/ubuntu focal stable
+    state: present
+
+- name: apt update
+  become: yes
+  apt:
+    update_cache: yes
+
+- name: Install docker
+  become: yes
+  apt:
+    name: docker-ce
+  changed_when: yes
+
+- name: Docker login
+  docker_login:
+    registry_url: https://asia-northeast1-docker.pkg.dev
+    username: _json_key_base64
+    password: "{{ lookup('file', keyfile_path) }}"
+- name: Pull docker image
+  docker_image:
+    name: asia-northeast1-docker.pkg.dev/minecraft-379905/minecraft-server/image
+    source: pull
+
+- name: Run docker container
+  docker_container:
+    name: minecraft-server
+    image: asia-northeast1-docker.pkg.dev/minecraft-379905/minecraft-server/image
+    ports:
+      - "25565:25565"
+    restart_policy: always
