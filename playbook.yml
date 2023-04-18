@@ -1,29 +1,22 @@
 ---
 - name: Play local task
   hosts: localhost
-  gather_facts: no
-
+  gather_facts: false
   vars:
-    dockerfile_path: "Docker/"
-    keyfile_path: "env/minecraft-base64.b64"
-    gcp_project: "minecraft-379905"
-    gcp_cred_file: "env/minecraft-379905-56203956ba9e.json"
-    zone: "asia-northeast1-b"
     gcp_cred_kind: "serviceaccount"
-    region: "asia-northeast1"
-
+  vars_files:
+    - vars/create-instance-vars.yml
   tasks:
-    - include_tasks: tasks/docker-push.yml
-      name: Build and push docker image
     - include_tasks: tasks/create-instance.yml
       name: Create GCP instance
 
-# - name: Play server task
-#   hosts: server
-#   become: yes
-#   vars:
-#     keyfile_path: "env/minecraft-base64.b64"
-#   tasks:
-#     - include_tasks: tasks/run-server.yml
-#       name: Run minecraft server
-
+- name: Play server task
+  hosts: server
+  become: true
+  vars:
+    dockerfile_path: "Docker/World"
+  vars_files:
+    - vars/run-server-vars.yml
+  tasks:
+    - include_tasks: tasks/run-server.yml
+      name: Run minecraft server
