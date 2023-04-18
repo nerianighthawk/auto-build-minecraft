@@ -1,0 +1,28 @@
+---
+- name: Delete the instance
+  gcp_compute_instance:
+    name: "{{ hostname }}"
+    state: absent
+    metadata:
+      ssh-keys: "{{ user_name }}:{{ public_key.content | b64decode }}"
+    zone: "{{ zone }}"
+    project: "{{ gcp_project }}"
+    auth_kind: "{{ gcp_cred_kind }}"
+    service_account_file: "{{ gcp_cred_file }}"
+    scopes:
+      - https://www.googleapis.com/auth/compute
+  register: instance
+
+- name: Delete SSH key
+  file:
+    path: "{{ ssh_key_dir }}{{ item }}"
+    state: absent
+  loop:
+    - "{{ hostname }}"
+    - "{{ hostname }}.pub"
+
+- name: Delete known hosts
+  lineinfile:
+    path: "{{ ssh_key_dir }}known_hosts"
+    state: absent
+    search_string: "{{ instance.networkInterfaces.accessConfigs.natIP.address }}"

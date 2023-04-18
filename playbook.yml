@@ -6,9 +6,20 @@
     gcp_cred_kind: "serviceaccount"
   vars_files:
     - vars/create-instance-vars.yml
+    - vars/playbook-vars.yml
   tasks:
     - include_tasks: tasks/create-instance.yml
       name: Create GCP instance
+      when: "{{ exec_type }} == 'create'"
+    - include_tasks: tasks/stop-instance.yml
+      name: Stop GCP instance
+      when: "{{ exec_type }} == 'stop'"
+    - include_tasks: tasks/start-instance.yml
+      name: Start GCP instance
+      when: "{{ exec_type }} == 'start'"
+    - include_tasks: tasks/delete-instance.yml
+      name: Delete GCP instance
+      when: "{{ exec_type }} == 'delete'"
 
 - name: Play server task
   hosts: server
@@ -20,3 +31,4 @@
   tasks:
     - include_tasks: tasks/run-server.yml
       name: Run minecraft server
+      when: "{{ exec_type }} == 'create'"
