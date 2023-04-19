@@ -20,6 +20,9 @@
     - include_tasks: tasks/delete-instance.yml
       name: Delete GCP instance
       when: exec_type == "delete"
+    - include_tasks: tasks/add-hosts.yml
+      name: Add hosts to inventory
+      when: exec_type == "create" or exec_type == "download"
 
 - name: Play server task
   hosts: server
@@ -27,9 +30,13 @@
   vars:
     dockerfile_path: "Docker"
   vars_files:
+    - vars/create-instance-vars.yml
     - vars/run-server-vars.yml
     - vars/playbook-vars.yml
   tasks:
     - include_tasks: tasks/run-server.yml
       name: Run minecraft server
       when: exec_type == "create"
+    - include_tasks: tasks/download-world-data.yml
+      name: Download world data
+      when: exec_type == "download"
