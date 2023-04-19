@@ -10,25 +10,26 @@
   tasks:
     - include_tasks: tasks/create-instance.yml
       name: Create GCP instance
-      when: "{{ exec_type }} == 'create'"
+      when: exec_type == "create"
     - include_tasks: tasks/stop-instance.yml
       name: Stop GCP instance
-      when: "{{ exec_type }} == 'stop'"
+      when: exec_type == "stop"
     - include_tasks: tasks/start-instance.yml
       name: Start GCP instance
-      when: "{{ exec_type }} == 'start'"
+      when: exec_type == "start"
     - include_tasks: tasks/delete-instance.yml
       name: Delete GCP instance
-      when: "{{ exec_type }} == 'delete'"
+      when: exec_type == "delete"
 
 - name: Play server task
   hosts: server
   become: true
   vars:
-    dockerfile_path: "Docker/World"
+    dockerfile_path: "Docker"
   vars_files:
     - vars/run-server-vars.yml
+    - vars/playbook-vars.yml
   tasks:
     - include_tasks: tasks/run-server.yml
       name: Run minecraft server
-      when: "{{ exec_type }} == 'create'"
+      when: exec_type == "create"
