@@ -11,7 +11,7 @@
 - whitelist.json
 - server.properties
 - world/
-- mod/
+- mods/
 
 ### ansible 実行環境
 
