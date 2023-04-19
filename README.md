@@ -33,7 +33,11 @@ GCP のサービスアカウントを作成し、サービスアカウントの�
 
 ### 変数設定
 
-`/var` ディレクトリに以下の2つのファイルを入れる
+`/var` ディレクトリに以下の3つのファイルを入れる
+
+```yml:playbook-vars.yml
+exec_type: "create"
+```
 
 ```yml:create-instance-vars.yml
 gcp_project: "sample-00000"
@@ -59,3 +63,10 @@ container_name: "sample-container"
 ```console
 ansible-playbook playbook.yml
 ```
+
+`playbook-vars.yml` に記載されている `exec_type` の値によって、実行時の挙動は以下のように変化する
+
+- `create` の場合、サーバーの構築とインスタンスの作成を行う
+- `stop` の場合、サーバーとインスタンスの停止を行う
+- `start` の場合、サーバーとインスタンスの起動を行う
+- `delete` の場合、サーバーとインスタンスの削除を行う
