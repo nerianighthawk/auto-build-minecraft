@@ -17,9 +17,10 @@ COPY resources/eula.txt /minecraft/
 COPY resources/whitelist.json /minecraft/
 COPY resources/ops.json /minecraft/
 COPY resources/server.properties /minecraft/
-RUN if test -d resources/world; then \
-        mkdir /minecraft/world && \
-        cp resources/world/* /minecraft/world/; \
-    fi
+
+RUN mkdir /minecraft/world
+RUN mkdir /minecraft/mods
+COPY resources/world /minecraft/world
+COPY resources/mods /minecraft/mods
 
 CMD ["/bin/bash", "run.sh"]
