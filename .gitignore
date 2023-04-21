@@ -1,7 +1,13 @@
-Docker/resources/*
-
 .DS_Store
 
-/env/*
+auto_build_minecraft/Docker/resources
 
-/vars/*
+/auto_build_minecraft/env
+
+/auto_build_minecraft/vars
+
+/.venv
+
+/Downloads
+
+/poetry.lock
