@@ -11,3 +11,5 @@ auto_build_minecraft/Docker/resources
 /Downloads
 
 /poetry.lock
+
+*/gcp_credential.json
