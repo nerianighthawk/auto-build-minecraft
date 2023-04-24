@@ -3,7 +3,7 @@
   gcp_compute_address_info:
     region: "{{ region }}"
     filters:
-    - "name = {{ hostname }}-address"
+    - "name = {{project_name}}-{{ hostname }}-address"
     project: "{{ gcp_project }}"
     auth_kind: "{{ gcp_cred_kind }}"
     service_account_file: "{{ gcp_cred_file }}"
@@ -11,7 +11,7 @@
 
 - name: Delete the instance
   gcp_compute_instance:
-    name: "{{ hostname }}"
+    name: "{{project_name}}-{{ hostname }}"
     state: absent
     zone: "{{ zone }}"
     project: "{{ gcp_project }}"
@@ -25,8 +25,8 @@
     path: "{{ ssh_key_dir }}{{ item }}"
     state: absent
   loop:
-    - "{{ hostname }}"
-    - "{{ hostname }}.pub"
+    - "{{project_name}}-{{ hostname }}"
+    - "{{project_name}}-{{ hostname }}.pub"
 
 - name: Delete known hosts
   lineinfile:

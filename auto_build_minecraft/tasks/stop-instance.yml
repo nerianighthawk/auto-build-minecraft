@@ -1,7 +1,7 @@
 ---
 - name: Stop the instance
   gcp_compute_instance:
-    name: "{{ hostname }}"
+    name: "{{project_name}}-{{ hostname }}"
     status: TERMINATED
     zone: "{{ zone }}"
     project: "{{ gcp_project }}"

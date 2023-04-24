@@ -1,7 +1,7 @@
 ---
 - name: Start the instance
   gcp_compute_instance:
-    name: "{{ hostname }}"
+    name: "{{project_name}}-{{ hostname }}"
     status: RUNNING 
     zone: "{{ zone }}"
     project: "{{ gcp_project }}"
