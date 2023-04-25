@@ -13,3 +13,7 @@ auto_build_minecraft/Docker/resources
 /poetry.lock
 
 */gcp_credential.json
+
+/dist
+
+__pycache__

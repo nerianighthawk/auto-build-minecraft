@@ -9,8 +9,10 @@ packages = [{include = "auto_build_minecraft"}]
 
 [tool.poetry.dependencies]
 python = "^3.7"
-ansible-runner = "^2.3.2"
 
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.scripts]
+msab = "auto_build_minecraft.msab:main"
