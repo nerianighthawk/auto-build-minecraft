@@ -11,7 +11,7 @@
 - whitelist.json
 - server.properties
 - world/
-- mod/
+- mods/
 
 ### ansible 実行環境
 
@@ -70,3 +70,4 @@ ansible-playbook playbook.yml
 - `stop` の場合、サーバーとインスタンスの停止を行う
 - `start` の場合、サーバーとインスタンスの起動を行う
 - `delete` の場合、サーバーとインスタンスの削除を行う
+- `download` の場合、サーバーからワールドデータのダウンロードを行う
