@@ -10,6 +10,9 @@ jobs:
   deploy:
     if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
+    env:
+      GITHUB_USER: ${{ secrets.EXT_GITHUB_USER }}
+      GITHUB_TOKEN: ${{ secrets.EXT_GITHUB_PAT }}
     steps:
       - uses: actions/checkout@v2
         with:

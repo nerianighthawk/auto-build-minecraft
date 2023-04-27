@@ -11,8 +11,11 @@ on:
 jobs:
   version-up-rc:
     runs-on: ubuntu-latest
+    env:
+      GITHUB_USER: ${{ secrets.EXT_GITHUB_USER }}
+      GITHUB_TOKEN: ${{ secrets.EXT_GITHUB_PAT }}
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
           fetch-depth: 0
           token: ${{ secrets.EXT_GITHUB_PAT }}
