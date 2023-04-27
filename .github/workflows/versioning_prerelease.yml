@@ -1,0 +1,32 @@
+---
+name: auto versioning of prerelease.
+on:
+  pull_request:
+    types:
+      - opened
+      - reopened
+    branches:
+      - develop
+
+jobs:
+  version-up-rc:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set up Python
+        uses: actions/setup-python@v3
+        with:
+          python-version: '3.x'
+      - name: Install poetry
+        run: pip install poetry
+      - name: Resolve version num
+        run: echo PRERELEASE_VERSION=$(poetry version --dry-run -s prerelease | sed 's/a/rc/g') >> $GITHUB_ENV
+      - name: Set releaser settings
+        run: |
+          git config --global user.name ${{ secrets.EXT_GITHUB_USER }}
+          git config --global user.email ${{ secrets.EXT_GITHUB_EMAIL }}
+      - name: Versioning
+        run: |
+          poetry version ${{ env.PRERELEASE_VERSION }}
+          git add pyproject.toml
+          git commit -m "[automate_versioning_prerelease] Prerelease ${{ env.PRERELEASE_VERSION }}"
+          git push

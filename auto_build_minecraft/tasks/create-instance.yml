@@ -1,10 +1,10 @@
 ---
 - name: Create ssh key
   openssh_keypair:
-    path: "{{ ssh_key_dir }}{{project_name}}-{{ hostname }}"
+    path: "{{ temp_dir }}/{{project_name}}-{{ hostname }}"
 - name: Slurp ssh public key
   slurp:
-    src: "{{ ssh_key_dir }}{{project_name}}-{{ hostname }}.pub"
+    src: "{{ temp_dir }}/{{project_name}}-{{ hostname }}.pub"
   register: public_key
 - name: Create a disk
   gcp_compute_disk:

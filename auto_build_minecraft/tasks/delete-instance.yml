@@ -22,14 +22,8 @@
 
 - name: Delete SSH key
   file:
-    path: "{{ ssh_key_dir }}{{ item }}"
+    path: "{{ temp_dir }}/{{ item }}"
     state: absent
   loop:
     - "{{project_name}}-{{ hostname }}"
     - "{{project_name}}-{{ hostname }}.pub"
-
-- name: Delete known hosts
-  lineinfile:
-    path: "{{ ssh_key_dir }}known_hosts"
-    state: absent
-    search_string: "{{ address.resources[0].address }}"

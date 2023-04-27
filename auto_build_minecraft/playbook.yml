@@ -4,9 +4,6 @@
   gather_facts: false
   vars:
     gcp_cred_kind: "serviceaccount"
-  vars_files:
-    - vars/create-instance-vars.yml
-    - vars/playbook-vars.yml
   tasks:
     - include_tasks: tasks/create-instance.yml
       name: Create GCP instance
@@ -28,11 +25,8 @@
   hosts: server
   become: true
   vars:
-    dockerfile_path: "Docker"
-  vars_files:
-    - vars/create-instance-vars.yml
-    - vars/run-server-vars.yml
-    - vars/playbook-vars.yml
+    container_name: "minecraft-server"
+    image_name: "minecraft-image"
   tasks:
     - include_tasks: tasks/run-server.yml
       name: Run minecraft server

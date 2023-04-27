@@ -31,16 +31,21 @@
     name: docker-ce
   changed_when: yes
 
+- name: Copy dockerfile
+  copy:
+    src: "{{ dockerfile_path }}"
+    dest: Docker
+
 - name: Copy resource files
   copy:
-    src: Docker
-    dest: "{{ resource_file_dest }}"
+    src: "{{ resources_path }}"
+    dest: Docker
 
 - name: Build docker images
   docker_image:
     name: "{{ image_name }}"
     build:
-      path: "{{ dockerfile_path }}"
+      path: Docker
     source: build
 
 - name: Run docker container

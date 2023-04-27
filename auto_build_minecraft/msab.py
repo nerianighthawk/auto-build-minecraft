@@ -7,6 +7,9 @@ import subprocess
 import os
 import sys
 import logging
+import yaml
+import json
+from random import randrange
 from dataclasses import dataclass, asdict
 from functools import reduce
 
@@ -15,6 +18,16 @@ from functools import reduce
 class ExtraVars:
     # create, start, stop, delete, download
     exec_type: str
+    temp_dir: str
+    gcp_project: str
+    gcp_cred_file: str
+    region: str
+    resources_path: str
+    dockerfile_path: str
+    project_name: str
+    hostname: str
+    user_name: str
+    zone: str
 
 
 @dataclass
@@ -62,20 +75,30 @@ def initialize_context() -> MSABContext:
     return MSABContext(exec_dir, install_dir, logger)
 
 
-def initialize_extra_vars(context: MSABContext, args: list(str)) -> ExtraVars:
-    exec_type = args[0]
-    return ExtraVars(exec_type)
+def initialize_extra_vars(context: MSABContext, args: list) -> ExtraVars:
+    exec_type = args[1]
+    temp_dir = f'{context.exec_dir}/.msab'
+    with open(f'{context.exec_dir}/msab.yml', 'r') as yml:
+        config = yaml.safe_load(yml)
+    region = config['zone'][:-2]
+    gcp_cred_file = f'{context.exec_dir}/gcp_credential.json'
+    with open(gcp_cred_file, 'r') as j:
+        gcp = json.load(j)
+    gcp_project = gcp['project_id']
+    resources_path = f'{context.exec_dir}/resources'
+    dockerfile_path = f'{context.install_dir}/Docker/Dockerfile'
+    return ExtraVars(exec_type, temp_dir, gcp_project, gcp_cred_file, region, resources_path, dockerfile_path, **config)
 
 
 def file_check(context: MSABContext):
     # Create mods and world directories if they don't exist
-    os.makedirs('resource/mods', exist_ok=True)
-    os.makedirs('resource/world', exist_ok=True)
+    os.makedirs('resources/mods', exist_ok=True)
+    os.makedirs('resources/world', exist_ok=True)
     file_list: list[str] = [
-        'resource/eula.txt',
-        'resource/ops.json',
-        'resource/server.properties',
-        'resource/whitelist.json',
+        'resources/eula.txt',
+        'resources/ops.json',
+        'resources/server.properties',
+        'resources/whitelist.json',
         'gcp_credential.json',
         'msab.yml'
     ]
@@ -87,7 +110,7 @@ def file_check(context: MSABContext):
         raise MSABExecption
 
 
-def args_check(context: MSABContext, args: list(str)):
+def args_check(context: MSABContext, args: list):
     exec_types = ['create', 'start', 'stop', 'delete', 'download']
     error_msg = 'The msab command expects one of create, start, stop, delete, download as command line arguments'
     if len(args) == 0:
@@ -101,7 +124,7 @@ def args_check(context: MSABContext, args: list(str)):
 
 
 def run_ansible(context: MSABContext, extra_vars: ExtraVars):
-    command = ['ansible-playbook', f'{context.install_dir}/playbook.yml', '-e', asdict(extra_vars)]
+    command = ['ansible-playbook', f'{context.install_dir}/playbook.yml', '-e', str(asdict(extra_vars))]
     subprocess.run(command)
 
 
@@ -112,6 +135,7 @@ def main():
         args: list(str) = sys.argv
         args_check(context, args)
         extra_vars: ExtraVars = initialize_extra_vars(context, args)
+        context.logger.info(str(asdict(extra_vars)))
         run_ansible(context, extra_vars)
         context.logger.info('python log finished.')
         context.logger.info('Below is the ansible run log')
