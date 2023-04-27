@@ -13,12 +13,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check out codes
-        uses: actions/checkout
+        uses: actions/checkout@v2
         with:
           fetch-depth: 0
           token: ${{ secrets.EXT_GITHUB_PAT }}
       - name: Set up Python
-        uses: actions/setup-python
+        uses: actions/setup-python@v2
         with:
           python-version: '3.x'
       - name: Install poetry
