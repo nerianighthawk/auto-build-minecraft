@@ -1,0 +1,34 @@
+---
+- name: get info on an address
+  gcp_compute_address_info:
+    region: "{{ region }}"
+    filters:
+    - "name = {{project_name}}-{{ hostname }}-address"
+    project: "{{ gcp_project }}"
+    auth_kind: "{{ gcp_cred_kind }}"
+    service_account_file: "{{ gcp_cred_file }}"
+  register: address
+
+- name: Delete the instance
+  gcp_compute_instance:
+    name: "{{project_name}}-{{ hostname }}"
+    state: absent
+    zone: "{{ zone }}"
+    project: "{{ gcp_project }}"
+    auth_kind: "{{ gcp_cred_kind }}"
+    service_account_file: "{{ gcp_cred_file }}"
+    scopes:
+      - https://www.googleapis.com/auth/compute
+
+- name: Delete SSH key
+  file:
+    path: "{{ temp_dir }}/{{ item }}"
+    state: absent
+  loop:
+    - "{{project_name}}-{{ hostname }}"
+    - "{{project_name}}-{{ hostname }}.pub"
+
+- name: Remove host entry from known_hosts file
+  known_hosts:
+    name: "{{ address.resources[0].address }}"
+    state: absent

@@ -1,0 +1,19 @@
+[tool.poetry]
+name = "auto-build-minecraft"
+version = "0.2.1"
+description = ""
+authors = ["nerianighthawk <neria.nighthawk@gmail.com>"]
+license = "MIT"
+readme = "README.md"
+packages = [{include = "auto_build_minecraft"}]
+
+[tool.poetry.dependencies]
+python = "^3.7"
+pyyaml = "^6.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.scripts]
+msab = "auto_build_minecraft.msab:main"
