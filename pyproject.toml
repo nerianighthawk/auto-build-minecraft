@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "auto-build-minecraft"
-version = "0.2.0"
+version = "0.2.1rc0"
 description = ""
 authors = ["nerianighthawk <neria.nighthawk@gmail.com>"]
 license = "MIT"
