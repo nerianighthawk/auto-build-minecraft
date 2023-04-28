@@ -143,14 +143,14 @@ def main():
         context.logger.info(str(asdict(extra_vars)))
         create_config(context, extra_vars)
         run_ansible(context, extra_vars)
-        context.logger.info('python log finished.')
-        context.logger.info('Below is the ansible run log')
     except MSABExecption as e:
         context.logger.error(f'msab has error.')
         sys.exit(1)
     except Exception as e:
         context.logger.error(f'Exception in msab command: {str(e)}')
         sys.exit(1)
+    finally:
+        context.logger.info('finished msab.')
 
 
 if __name__ == '__main__':
