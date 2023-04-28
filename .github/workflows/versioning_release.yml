@@ -1,0 +1,49 @@
+---
+name: auto versioning of release.
+on:
+  pull_request:
+    types:
+      - opened
+      - reopened
+    branches:
+      - main
+
+jobs:
+  version-up-rc:
+    runs-on: ubuntu-latest
+    env:
+      GITHUB_USER: ${{ secrets.EXT_GITHUB_USER }}
+      GITHUB_TOKEN: ${{ secrets.EXT_GITHUB_PAT }}
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.EXT_GITHUB_PAT }}
+      - name: Set up Python
+        uses: actions/setup-python@v3
+        with:
+          python-version: '3.x'
+      - name: Install poetry
+        run: pip install poetry
+      - name: Patch release
+        run: |
+          echo 'UPDATE_ARGS=patch' >> $GITHUB_ENV
+      - name: Minor release
+        if: contains(toJSON(github.event.pull_request.title), '[[MINOR]]')
+        run: |
+          echo 'UPDATE_ARGS=minor' >> $GITHUB_ENV
+      - name: Major release
+        if: contains(toJSON(github.event.pull_request.title), '[[MAJOR]]')
+        run: |
+          echo 'UPDATE_ARGS=major' >> $GITHUB_ENV
+      - name: Set releaser settings
+        run: |
+          git config --global user.name ${{ secrets.EXT_GITHUB_USER }}
+          git config --global user.email ${{ secrets.EXT_GITHUB_EMAIL }}
+      - name: Versioning
+        if: "env.UPDATE_ARGS != ''"
+        run: |
+          RELEASE_VERSION=$(poetry version -s ${{ env.UPDATE_ARGS }})
+          git add pyproject.toml
+          git commit -m "[automate_versioning] Release ${RELEASE_VERSION}"
+          git push origin HEAD:${{ github.head_ref }}

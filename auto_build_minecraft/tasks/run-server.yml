@@ -1,0 +1,57 @@
+---
+- name: Execute apt update
+  apt:
+    update_cache: yes
+
+- name: Install packages
+  apt:
+    name:
+      - apt-transport-https
+      - ca-certificates
+      - curl
+      - software-properties-common
+    state: present
+
+- name: Add docker GPG key
+  ansible.builtin.apt_key:
+    url: https://download.docker.com/linux/ubuntu/gpg
+    state: present
+
+- name: Add docker repository to APT source
+  ansible.builtin.apt_repository:
+    repo: deb [arch=amd64] https://download.docker.com/linux/ubuntu focal stable
+    state: present
+
+- name: apt update
+  apt:
+    update_cache: yes
+
+- name: Install docker
+  apt:
+    name: docker-ce
+  changed_when: yes
+
+- name: Copy dockerfile
+  copy:
+    src: "{{ dockerfile_path }}"
+    dest: Docker
+
+- name: Copy resource files
+  copy:
+    src: "{{ resources_path }}"
+    dest: Docker
+
+- name: Build docker images
+  docker_image:
+    name: "{{ image_name }}"
+    build:
+      path: Docker
+    source: build
+
+- name: Run docker container
+  docker_container:
+    name: "{{ container_name }}"
+    image: "{{ image_name }}"
+    ports:
+      - "25565:25565"
+    restart_policy: always
