@@ -27,3 +27,8 @@
   loop:
     - "{{project_name}}-{{ hostname }}"
     - "{{project_name}}-{{ hostname }}.pub"
+
+- name: Remove host entry from known_hosts file
+  known_hosts:
+    name: "{{ address.resources[0].address }}"
+    state: absent

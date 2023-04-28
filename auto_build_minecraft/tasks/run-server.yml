@@ -31,10 +31,15 @@
     name: docker-ce
   changed_when: yes
 
+- name: Create directory
+  file:
+    path: Docker
+    state: directory
+
 - name: Copy dockerfile
   copy:
     src: "{{ dockerfile_path }}"
-    dest: Docker
+    dest: Docker/Dockerfile
 
 - name: Copy resource files
   copy:

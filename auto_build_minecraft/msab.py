@@ -123,6 +123,11 @@ def args_check(context: MSABContext, args: list):
         context.logger.info('Args confirmation: OK')
 
 
+def create_config(context: MSABContext, extra_vars: ExtraVars):
+    with open(f'{context.exec_dir}/ansible.cfg', 'w') as cfg:
+        cfg.write(f'[defaults]\nhost_key_checking = False\n\n[ssh_connection]\nssh_args = -o UserKnownHostsFile={extra_vars.temp_dir}/known_hosts')
+
+
 def run_ansible(context: MSABContext, extra_vars: ExtraVars):
     command = ['ansible-playbook', f'{context.install_dir}/playbook.yml', '-e', str(asdict(extra_vars))]
     subprocess.run(command)
@@ -136,15 +141,16 @@ def main():
         args_check(context, args)
         extra_vars: ExtraVars = initialize_extra_vars(context, args)
         context.logger.info(str(asdict(extra_vars)))
+        create_config(context, extra_vars)
         run_ansible(context, extra_vars)
-        context.logger.info('python log finished.')
-        context.logger.info('Below is the ansible run log')
     except MSABExecption as e:
         context.logger.error(f'msab has error.')
         sys.exit(1)
     except Exception as e:
         context.logger.error(f'Exception in msab command: {str(e)}')
         sys.exit(1)
+    finally:
+        context.logger.info('finished msab.')
 
 
 if __name__ == '__main__':
