@@ -1,27 +1,33 @@
 # マイクラサーバー自動ビルドツール
 
+## バージョン情報
+
+以下のバージョンで実行可能です。
+
+```console
+Python 3.7.3
+ansible [core 2.14.4]
+```
+
+## インストール
+
+以下のコマンドでインストールできます。
+
+```console
+pip install auto-build-minecraft
+```
+
 ## セットアップ
-
-### Docker 関連
-
-`Docker/resources` にマイクラフォルダに入れたいものを入れる
-
-- eula.txt
-- ops.json
-- whitelist.json
-- server.properties
-- world/
-- mods/
 
 ### ansible 実行環境
 
-GCP 用の Ansible プラグインをインストールする
+GCP 用の Ansible プラグインをインストールします。
 
 ```console
 pip install google-auth google-auth-oauthlib google-auth-httplib2 google-cloud-sdk
 ```
 
-Ansible のコレクションをインストールする
+Ansible のコレクションをインストールします。
 
 ```console
 ansible-galaxy collection install google.cloud
@@ -29,42 +35,28 @@ ansible-galaxy collection install google.cloud
 
 ### GCP の認証
 
-GCP のサービスアカウントを作成し、サービスアカウントの認証ファイルを `env/` ディレクトリに入れる
+GCP のサービスアカウントを作成し、サービスアカウントの認証ファイルをコマンド実行ディレクトリに入れます。
 
-### 変数設定
+### 設定ファイル
 
-`/var` ディレクトリに以下の3つのファイルを入れる
+コマンド実行ディレクトリに `msab.yml` ファイルを作成し、以下のパラメータを記述してください。
 
-```yml:playbook-vars.yml
-exec_type: "create"
-```
-
-```yml:create-instance-vars.yml
-gcp_project: "sample-00000"
-gcp_network: "network"
-gcp_cred_file: "env/sample.json"
-zone: "asia-northeast1-b"
-region: "asia-northeast1"
-hostname: "sample"
-user_name: "sample-user"
-ssh_key_dir: "~/.ssh/"
-```
-
-```yml:run-server-vars.yml
-resource_file_dest: "/home/sample-user"
-image_name: "sample-image"
-container_name: "sample-container"
+```console
+project_name: example
+hostname: survival-map
+user_name: nerianighthawk
+zone: asia-northeast1-b
 ```
 
 ## 実行
 
-以下で実行する
+以下で実行できます。
 
 ```console
-ansible-playbook playbook.yml
+msab {exec_type}
 ```
 
-`playbook-vars.yml` に記載されている `exec_type` の値によって、実行時の挙動は以下のように変化する
+コマンド実行時の `exec_type` には以下を参考に指定してください。
 
 - `create` の場合、サーバーの構築とインスタンスの作成を行う
 - `stop` の場合、サーバーとインスタンスの停止を行う
