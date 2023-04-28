@@ -4,15 +4,13 @@ on:
   pull_request:
     types:
       - opened
+      - reopened
     branches:
       - main
 
 jobs:
   version-up-rc:
     runs-on: ubuntu-latest
-    env:
-      GITHUB_USER: ${{ secrets.EXT_GITHUB_USER }}
-      GITHUB_TOKEN: ${{ secrets.EXT_GITHUB_PAT }}
     steps:
       - uses: actions/checkout@v3
         with:
@@ -45,4 +43,4 @@ jobs:
           RELEASE_VERSION=$(poetry version -s ${{ env.UPDATE_ARGS }})
           git add pyproject.toml
           git commit -m "[automate_versioning] Release ${RELEASE_VERSION}"
-          git push
+          git push origin HEAD:${{ github.head_ref }}

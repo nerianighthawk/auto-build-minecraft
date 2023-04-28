@@ -11,9 +11,6 @@ on:
 jobs:
   version-up-rc:
     runs-on: ubuntu-latest
-    env:
-      GITHUB_USER: ${{ secrets.EXT_GITHUB_USER }}
-      GITHUB_TOKEN: ${{ secrets.EXT_GITHUB_PAT }}
     steps:
       - uses: actions/checkout@v3
         with:
@@ -36,4 +33,4 @@ jobs:
           poetry version ${{ env.PRERELEASE_VERSION }}
           git add pyproject.toml
           git commit -m "[automate_versioning_prerelease] Prerelease ${{ env.PRERELEASE_VERSION }}"
-          git push
+          git push origin HEAD:${{ github.head_ref }}
