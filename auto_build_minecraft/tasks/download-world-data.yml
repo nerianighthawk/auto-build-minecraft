@@ -1,12 +1,12 @@
 ---
 - name: Create downloads folder
   file:
-    path: "{{ resource_file_dest }}/downloads"
+    path: "downloads"
     state: directory
     mode: '0755'
 
 - name: Download files from docker container
-  command: "docker cp minecraft-server:/minecraft/{{ item }} {{ resource_file_dest }}/downloads/"
+  command: "docker cp minecraft-server:/minecraft/{{ item }} downloads"
   loop:
     - eula.txt
     - ops.json
@@ -17,12 +17,12 @@
 
 - name: Get file list
   find:
-    paths: "{{ resource_file_dest }}/downloads"
+    paths: "downloads"
     recurse: true
   register: files
 
 - name: Download files from server to local
   fetch:
     src: "{{ item }}"
-    dest: "./Downloads/"
+    dest: "{{ resources_path }}/Downloads"
   loop: "{{ files.files | map(attribute='path') | list }}"
